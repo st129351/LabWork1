@@ -21,4 +21,4 @@ make
 "make clean" for remove all objects files, "make cleanall" for remove object files and build results
 
 # Run
-project: ./assignment3 tests: ./tests
+project: ./labwork1
