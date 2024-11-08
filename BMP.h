@@ -1,3 +1,6 @@
+//Lichkovaha Daniil
+//st129351@student.spbu.ru
+//LabWork1
 #ifndef BMP_H
 #define BMP_H
 

@@ -1,3 +1,6 @@
+//Lichkovaha Daniil
+//st129351@student.spbu.ru
+//LabWork1
 #include "BMP.h"
 
 // BMP files usually have a header, followed by the array of pixels
@@ -48,6 +51,7 @@ the value specified in the headers in order to proceed to reading pixels
 
 void BMP::Rotate90Clockwise()
 {
+	std::swap(info_header.width, info_header.height); // сhange/update width to height
 	std::vector<uint8_t> rotated_data(data.size());
 	int channels = info_header.bit_count / 8; 
 	// quantity of channel in img (for 24-bit img = 24/8 = 3; it's red, green, blue)
@@ -55,7 +59,8 @@ void BMP::Rotate90Clockwise()
 	for (int y = 0; y < info_header.height; y++) {
 		for (int x = 0; x < info_header.width; x ++) {
 			for (int c = 0; c < channels; c++) {
-				rotated_data[(x * info_header.height + (info_header.height - 1 - y)) * channels + c] = data[(y * info_header.width + x) * channels + c];
+				rotated_data[(x * info_header.height + (info_header.height - 1 - y)) * channels + c] = 
+				data[(y * info_header.width + x) * channels + c];
 			}
 		}
 	}
@@ -67,11 +72,11 @@ void BMP::Rotate90Clockwise()
 	// (0;1) (1;1) (2;1)
 	// but image have a color (f.e. rgb) --> data = [r(0;0), b(0;0), g(0;0), r(1;0), b(1;0)...]
 	data = rotated_data;
-	std::swap(info_header.width, info_header.height); // сhange/update width to height
 }
 
 void BMP::Rotate90CounterClockwise()
 {
+	std::swap(info_header.width, info_header.height);
 	std::vector<uint8_t> rotated_data(data.size());
 	int channels = info_header.bit_count / 8;
 
@@ -83,7 +88,6 @@ void BMP::Rotate90CounterClockwise()
 		}
 	}
 	data = rotated_data;
-	std::swap(info_header.width, info_header.height);
 }
 
 void BMP::GaussianBlur()

@@ -1,3 +1,6 @@
+//Lichkovaha Daniil
+//st129351@student.spbu.ru
+//LabWork1
 #include "BMP.h"
 
 int main() 

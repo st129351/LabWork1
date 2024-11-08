@@ -13,5 +13,7 @@ $(OBJ_FILES): %.o : %.cpp
 labwork1: $(OBJ_FILES)
 	$(CXX) $(CXXFLAGS) -o labwork1 $(OBJ_FILES)
 
+clean:
+	rm -f *.o
 cleanall:
-	rm -f *.o labwork1 Rotated90Clockwise.bmp Rotate90CounterClockwise.bmp GaussianBlur.bmp
+	rm -f *.o *.bmp labwork1 
