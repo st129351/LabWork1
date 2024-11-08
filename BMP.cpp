@@ -13,6 +13,8 @@ BMP::BMP(const char* filename)
 	}
 
 	inp.read((char*)&header, sizeof(header)); // (char*)&header - casting to pointer to char; points to the beginning of "header" in memory
+	std::cout << sizeof(header) + sizeof(info_header) + sizeof(color_header) << std::endl;
+	std::cout << header.offset_data << std::endl;
 	// (std::ifstream) read() - read bytes from file and write it in inp
 	// 1st arg give info, where do i need to write data (memory area) 
 	// 2nd arg "says" take all bytes from header (quantity of bytes, which read() must read in memory area); 
@@ -25,12 +27,13 @@ BMP::BMP(const char* filename)
 
 	inp.read((char*)&info_header, sizeof(info_header));
 	// read from "inp" needs data (volume sizeof(i_h)) to info_header
+	std::cout << info_header.bit_count << std::endl;
 
-	if (info_header.bit_count == 32)
+	if (info_header.bit_count == 24)
 	{
 		inp.read((char*)&color_header, sizeof(color_header));
 	}
-	// now, if my image is 32-bytes, i'm also going to read inf about img's color to container("color_header")
+	// now, if my image is 24-bytes, i'm also going to read inf about img's color to container("color_header")
 	inp.seekg(header.offset_data, inp.beg);
 	// cursor offset by "offset_data" from begin of pixels in inp
 	// because now i have inf about bytes, from which begin pixels (66 string)
@@ -51,7 +54,6 @@ the value specified in the headers in order to proceed to reading pixels
 
 void BMP::Rotate90Clockwise()
 {
-	std::swap(info_header.width, info_header.height); // сhange/update width to height
 	std::vector<uint8_t> rotated_data(data.size());
 	int channels = info_header.bit_count / 8; 
 	// quantity of channel in img (for 24-bit img = 24/8 = 3; it's red, green, blue)
@@ -71,12 +73,12 @@ void BMP::Rotate90Clockwise()
 	// (0;0) (1;0) (2;0)
 	// (0;1) (1;1) (2;1)
 	// but image have a color (f.e. rgb) --> data = [r(0;0), b(0;0), g(0;0), r(1;0), b(1;0)...]
+	std::swap(info_header.width, info_header.height); // сhange/update width to height
 	data = rotated_data;
 }
 
 void BMP::Rotate90CounterClockwise()
 {
-	std::swap(info_header.width, info_header.height);
 	std::vector<uint8_t> rotated_data(data.size());
 	int channels = info_header.bit_count / 8;
 
@@ -87,6 +89,7 @@ void BMP::Rotate90CounterClockwise()
 			}
 		}
 	}
+	std::swap(info_header.width, info_header.height);
 	data = rotated_data;
 }
 
@@ -134,7 +137,7 @@ void BMP::Save(const char* filename)
 	out.write((char*)&header, sizeof(header));
 	out.write((char*)&info_header, sizeof(info_header));
 
-	if (info_header.bit_count == 32) {
+	if (info_header.bit_count == 24) {
 		out.write((char*)&color_header, sizeof(color_header)); // update color if image has additional info about colors (f.e. alpgha-channel)
 	}
 

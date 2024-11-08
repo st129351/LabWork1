@@ -3,11 +3,13 @@ CXXFLAGS = -g -Wall -pthread -I. -Werror -Wpedantic
 
 PROJ_FILES = $(wildcard *.cpp)
 
+HEADERS = $(wildcard *.h)
+
 OBJ_FILES = $(PROJ_FILES:.cpp=.o)
 
 all: labwork1
 
-$(OBJ_FILES): %.o : %.cpp
+$(OBJ_FILES): %.o : %.cpp $(HEADERS)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 labwork1: $(OBJ_FILES)

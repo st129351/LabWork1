@@ -36,7 +36,6 @@ struct BMPInfoHeader // must be single-byte alignment
 	uint32_t colors_used{0}; // the num of using colors, i want use max number of colors (use 0)
 	uint32_t colors_important{0}; // if 0, all colors are required
 }; // second default header
-#pragma pack(pop) // no longer required single-byte alignment
 
 struct BMPColorHeader
 {
@@ -47,6 +46,7 @@ struct BMPColorHeader
 	uint32_t color_space_type{0x73524742}; // the color space
 	uint32_t unused[16]{0}; // reserved data for sRGB color space (massive with 16 '0')
 };
+#pragma pack(pop) // no longer required single-byte alignment
 
 class BMP
 {
@@ -62,6 +62,7 @@ public:
 	void Rotate90Clockwise();
 	void Rotate90CounterClockwise();
 	void GaussianBlur();
+
 	void Save(const char* filename);
 };
 
