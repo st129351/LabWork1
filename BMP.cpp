@@ -54,47 +54,64 @@ the value specified in the headers in order to proceed to reading pixels
 
 void BMP::Rotate90Clockwise()
 {
-    int row_size = (info_header.width * 3 + 3) & (~3);
-    std::vector<uint8_t> rotated_data(info_header.size_image);
+
+    int old_row_size = (info_header.width * (info_header.bit_count / 8) + 3) & ~3;
+    int new_row_size = (info_header.height * (info_header.bit_count / 8) + 3) & ~3;
+
+
+    std::vector<uint8_t> rotated_data(new_row_size * info_header.width);
 
     for (int y = 0; y < info_header.height; ++y)
     {
         for (int x = 0; x < info_header.width; ++x)
         {
-            int oldIndex = y * row_size + x * 3;
-            int newIndex = (info_header.width - x - 1) * ((info_header.height * 3 + 3) & (~3)) + y * 3;
 
-            rotated_data[newIndex]     = data[oldIndex];
-            rotated_data[newIndex + 1] = data[oldIndex + 1];
-            rotated_data[newIndex + 2] = data[oldIndex + 2];
+            int oldIndex = y * old_row_size + x * (info_header.bit_count / 8);
+            int newIndex = (info_header.width - x - 1) * new_row_size + y * (info_header.bit_count / 8);
+
+            for (int channel = 0; channel < (info_header.bit_count / 8); ++channel)
+            {
+                rotated_data[newIndex + channel] = data[oldIndex + channel];
+            }
         }
     }
 
     std::swap(info_header.width, info_header.height);
-    data = rotated_data;
+    info_header.size_image = rotated_data.size();
+    header.file_size = header.offset_data + rotated_data.size();
+
+    data = std::move(rotated_data);
 }
+
 
 
 void BMP::Rotate90CounterClockwise()
 {
-    int row_size = (info_header.width * 3 + 3) & (~3);
-    std::vector<uint8_t> rotated_data(info_header.size_image);
+    int old_row_size = (info_header.width * (info_header.bit_count / 8) + 3) & ~3;
+    int new_row_size = (info_header.height * (info_header.bit_count / 8) + 3) & ~3;
+
+    std::vector<uint8_t> rotated_data(new_row_size * info_header.width);
 
     for (int y = 0; y < info_header.height; ++y)
     {
         for (int x = 0; x < info_header.width; ++x)
         {
-            int oldIndex = y * row_size + x * 3;
-            int newIndex = x * ((info_header.height * 3 + 3) & (~3)) + (info_header.height - y - 1) * 3;
+            int oldIndex = y * old_row_size + x * (info_header.bit_count / 8);
+            
+            int newIndex = x * new_row_size + (info_header.height - y - 1) * (info_header.bit_count / 8);
 
-            rotated_data[newIndex]     = data[oldIndex];
-            rotated_data[newIndex + 1] = data[oldIndex + 1];
-            rotated_data[newIndex + 2] = data[oldIndex + 2];
+            for (int channel = 0; channel < (info_header.bit_count / 8); ++channel)
+            {
+                rotated_data[newIndex + channel] = data[oldIndex + channel];
+            }
         }
     }
 
     std::swap(info_header.width, info_header.height);
-    data = rotated_data;
+    info_header.size_image = rotated_data.size();
+    header.file_size = header.offset_data + rotated_data.size();
+
+    data = std::move(rotated_data);
 }
 
 void BMP::GaussianBlur()
