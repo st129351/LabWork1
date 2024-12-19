@@ -54,48 +54,46 @@ the value specified in the headers in order to proceed to reading pixels
 
 void BMP::Rotate90Clockwise()
 {
-    std::vector<uint8_t> rotated_data(data.size());
-    int channels = info_header.bit_count / 8;
+    int row_size = (info_header.width * 3 + 3) & (~3);
+    std::vector<uint8_t> rotated_data(info_header.size_image);
 
-    for (int y = 0; y < info_header.height; y++)   // at first y, then x
+    for (int y = 0; y < info_header.height; ++y)
     {
-        for (int x = 0; x < info_header.width; x++)
+        for (int x = 0; x < info_header.width; ++x)
         {
-            for (int c = 0; c < channels; c++)
-            {
-                rotated_data[((info_header.width - 1 - x) * info_header.height + y) * channels + c] = data[(y * info_header.width + x) * channels + c];
-            }
+            int oldIndex = y * row_size + x * 3;
+            int newIndex = (info_header.width - x - 1) * ((info_header.height * 3 + 3) & (~3)) + y * 3;
+
+            rotated_data[newIndex]     = data[oldIndex];
+            rotated_data[newIndex + 1] = data[oldIndex + 1];
+            rotated_data[newIndex + 2] = data[oldIndex + 2];
         }
     }
+
     std::swap(info_header.width, info_header.height);
     data = rotated_data;
 }
 
+
 void BMP::Rotate90CounterClockwise()
 {
-    std::vector<uint8_t> rotated_data(data.size());
-    int channels = info_header.bit_count / 8;
-    // quantity of channel in img (for 24-bit img = 24/8 = 3; it's red, green, blue)
-    // I WORK IN ONE-DIMENSIONAL ARRAY; read from upper left to lower right
-    for (int y = 0; y < info_header.height; y++)
+    int row_size = (info_header.width * 3 + 3) & (~3);
+    std::vector<uint8_t> rotated_data(info_header.size_image);
+
+    for (int y = 0; y < info_header.height; ++y)
     {
-        for (int x = 0; x < info_header.width; x ++)
+        for (int x = 0; x < info_header.width; ++x)
         {
-            for (int c = 0; c < channels; c++)
-            {
-                rotated_data[(x * info_header.height + (info_header.height - 1 - y)) * channels + c] =
-                    data[(y * info_header.width + x) * channels + c];
-            }
+            int oldIndex = y * row_size + x * 3;
+            int newIndex = x * ((info_header.height * 3 + 3) & (~3)) + (info_header.height - y - 1) * 3;
+
+            rotated_data[newIndex]     = data[oldIndex];
+            rotated_data[newIndex + 1] = data[oldIndex + 1];
+            rotated_data[newIndex + 2] = data[oldIndex + 2];
         }
     }
-    // y++ or ++y in cycle "for" running after iteration; ^ new = old
-    // (x;y) --> array? 1st coordinate - how many the program must go from left to right
-    // 2nd - how many lines did the programm skip (y*w + x) = (x*h + h-1-y)
-    // *channels + c; why? data = [(0;0), (1;0), (2,0), (0;1), (1;1), (2;1)]
-    // (0;0) (1;0) (2;0)
-    // (0;1) (1;1) (2;1)
-    // but image have a color (f.e. rgb) --> data = [r(0;0), b(0;0), g(0;0), r(1;0), b(1;0)...]
-    std::swap(info_header.width, info_header.height); // сhange/update width to height
+
+    std::swap(info_header.width, info_header.height);
     data = rotated_data;
 }
 
@@ -156,3 +154,9 @@ void BMP::Save(const char* filename)
 
     out.write((char*)data.data(), data.size()); // END!!!
 }
+
+
+
+
+
+
