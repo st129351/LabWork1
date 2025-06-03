@@ -1,6 +1,6 @@
 //Lichkovaha Daniil
 //st129351@student.spbu.ru
-//LabWork1
+//Parallel
 #ifndef BMP_H
 #define BMP_H
 
@@ -55,12 +55,45 @@ public:
     BMPInfoHeader info_header;
     BMPColorHeader color_header;
     std::vector<uint8_t> data;
-
+    
+    /**
+     * @class BMP
+     * @brief Class for working with BMP image files
+     * 
+     * This class provides functionality to read, write and process BMP images.
+     * The processing includes rotation and Gaussian blur operations.
+     */
     BMP(const char* filename); // constructor; "char* filename" point to 1-st symbol from string, which i assign filename
     // this allow me use char* like a string (const string in my case)
     // compiler read char* like a string, while symbol != '\0' (end of each str)
+    /**
+     * @brief Rotates the image 90 degrees clockwise
+     * 
+     * This method rotates the image using parallel processing of rows.
+     * The rotation is optimized with OpenMP for multi-core CPUs.
+     * 
+     * @note The method modifies the image data in-place
+     */
     void Rotate90Clockwise();
+    /**
+     * @brief Rotates the image 90 degrees counter clockwise
+     * 
+     * This method rotates the image using parallel processing of rows.
+     * The rotation is optimized with OpenMP for multi-core CPUs.
+     * 
+     * @note The method modifies the image data in-place
+     */
     void Rotate90CounterClockwise();
+
+    /**
+     * @brief Applies Gaussian blur to the image
+     * 
+     * This method applies a 3x3 Gaussian blur filter to the image.
+     * The processing is parallelized using OpenMP for better performance
+     * on multi-core systems.
+     * 
+     * @note Edge pixels are not processed to avoid out-of-bounds access
+     */
     void GaussianBlur();
 
     void Save(const char* filename);

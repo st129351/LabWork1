@@ -1,7 +1,8 @@
 //Lichkovaha Daniil
 //st129351@student.spbu.ru
-//LabWork1
+//Parallel
 #include "BMP.h"
+#include <omp.h>
 
 // BMP files usually have a header, followed by the array of pixels
 BMP::BMP(const char* filename)
@@ -13,8 +14,8 @@ BMP::BMP(const char* filename)
     }
 
     inp.read((char*)&header, sizeof(header)); // (char*)&header - casting to pointer to char; points to the beginning of "header" in memory
-    std::cout << sizeof(header) + sizeof(info_header) + sizeof(color_header) << std::endl;
-    std::cout << header.offset_data << std::endl;
+    // std::cout << sizeof(header) + sizeof(info_header) + sizeof(color_header) << std::endl;
+    // std::cout << header.offset_data << std::endl;
     // (std::ifstream) read() - read bytes from file and write it in inp
     // 1st arg give info, where do i need to write data (memory area)
     // 2nd arg "says" take all bytes from header (quantity of bytes, which read() must read in memory area);
@@ -27,7 +28,7 @@ BMP::BMP(const char* filename)
 
     inp.read((char*)&info_header, sizeof(info_header));
     // read from "inp" needs data (volume sizeof(i_h)) to info_header
-    std::cout << info_header.bit_count << std::endl;
+    // std::cout << info_header.bit_count << std::endl;
 
     if (info_header.bit_count == 24)
     {
@@ -61,6 +62,7 @@ void BMP::Rotate90Clockwise()
 
     std::vector<uint8_t> rotated_data(new_row_size * info_header.width);
 
+    #pragma omp parallel for
     for (int y = 0; y < info_header.height; ++y)
     {
         for (int x = 0; x < info_header.width; ++x)
@@ -92,6 +94,7 @@ void BMP::Rotate90CounterClockwise()
 
     std::vector<uint8_t> rotated_data(new_row_size * info_header.width);
 
+    #pragma omp parallel for
     for (int y = 0; y < info_header.height; ++y)
     {
         for (int x = 0; x < info_header.width; ++x)
@@ -126,6 +129,7 @@ void BMP::GaussianBlur()
     std::vector<uint8_t> blurred_data(data.size());
     int channels = info_header.bit_count / 8;
 
+    #pragma omp parallel for
     for (int y = 1; y < info_header.height - 1; y++)   // some neighbours of this pixel may extend beyond the image boundaries, (matrix 3*3)
     {
         for (int x = 1; x < info_header.width - 1; x++)   // kernel should not extend beyond the boundaries of the image

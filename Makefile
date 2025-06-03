@@ -1,21 +1,30 @@
 CXX = g++
-CXXFLAGS = -g -Wall -pthread -I. -Werror -Wpedantic
+CXXFLAGS = -g -Wall -pthread -I. -Werror -Wpedantic -fopenmp
+CXX_FLAG = -Iinclude
+GTEST_LIBS = -lgtest -lgtest_main -lpthread
 
-PROJ_FILES = $(wildcard *.cpp)
-
-HEADERS = $(wildcard *.h)
-
+SRC_DIR = src
+# wildcard - satisfies the pattern 
+PROJ_FILES = $(wildcard $(SRC_DIR)/*.cpp)
 OBJ_FILES = $(PROJ_FILES:.cpp=.o)
 
-all: labwork1
+# Exclude main.o from object files
+OBJ_FILES_WITHOUT_MAIN = $(filter-out $(SRC_DIR)/main.o, $(OBJ_FILES))
 
-$(OBJ_FILES): %.o : %.cpp $(HEADERS)
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+EXE_1 = labwork1
 
-labwork1: $(OBJ_FILES)
-	$(CXX) $(CXXFLAGS) -o labwork1 $(OBJ_FILES)
+all: $(EXE_1)
 
+$(SRC_DIR)/%.o: $(SRC_DIR)/%.cpp 
+	$(CXX) $(CXXFLAGS) $(CXX_FLAG) -c $< -o $@
+
+# executables
+$(EXE_1): $(OBJ_FILES)
+	$(CXX) $(CXXFLAGS) $(CXX_FLAG) $^ -o $@
+
+# "*" - for terminal, "%" - for Makefile
 clean:
-	rm -f *.o
+	rm -f $(SRC_DIR)/*.o
+
 cleanall:
-	rm -f *.o *.bmp labwork1 
+	rm -f $(SRC_DIR)/*.o $(EXE_1) *.bmp
