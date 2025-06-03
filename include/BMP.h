@@ -103,6 +103,12 @@ public:
      */
     void GaussianBlur();
 
+    /**
+     * @brief Saves the BMP image to a file
+     * @param filename Path to the output file
+     * @throws std::runtime_error if file cannot be opened
+     * @warning Overwrites existing files without warning
+     */
     void Save(const char* filename);
 };
 
