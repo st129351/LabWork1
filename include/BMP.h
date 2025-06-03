@@ -48,6 +48,13 @@ struct BMPColorHeader
 };
 #pragma pack(pop) // no longer required single-byte alignment
 
+/**
+ * @class BMP
+ * @brief Class for working with BMP image files
+ * 
+ * Provides functionality to read, write and process BMP images.
+ * Supports rotation and Gaussian blur operations with OpenMP parallelization.
+ */
 class BMP
 {
 public:
