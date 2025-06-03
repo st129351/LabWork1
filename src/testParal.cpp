@@ -24,5 +24,5 @@ void testParal(BMP& img, const std::string& task) {
     auto end = std::chrono::high_resolution_clock::now(); // end
     auto dur = std::chrono::duration_cast<std::chrono::milliseconds>(end - start); // duration
     
-    std::cout << task << "for" << task << "took " << dur.count() << " ms" << std::endl;
+    std::cout << "for " << task << " took " << dur.count() << " ms" << std::endl;
 }
