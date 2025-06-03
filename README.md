@@ -1,4 +1,4 @@
-## LabWork1
+## LabWork4: parallel
 
 Lichkovaha Daniil Andreevich, 24.B81-mm
 
@@ -12,7 +12,7 @@ Lab work 1
 3a. Rotate the image 90° clockwise. Save the result.
 3. Rotate the image 90° counterclockwise. Save the result.
 4. Apply a Gaussian filter to the rotated image. Save the result.
-
+5. Use parallel, if you need more performance.
 # Build
 
 make
@@ -21,4 +21,4 @@ make
 "make clean" for remove all objects files, "make cleanall" for remove object files and build results
 
 # Run
-project: ./labwork1
+project: ./parallel
