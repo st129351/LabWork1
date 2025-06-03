@@ -11,7 +11,7 @@ OBJ_FILES = $(PROJ_FILES:.cpp=.o)
 # Exclude main.o from object files
 OBJ_FILES_WITHOUT_MAIN = $(filter-out $(SRC_DIR)/main.o, $(OBJ_FILES))
 
-EXE_1 = labwork1
+EXE_1 = parallel
 
 all: $(EXE_1)
 
